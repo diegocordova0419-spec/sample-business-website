@@ -1,8 +1,41 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CartContext } from '../lib/CartContext.js'
 
 function CartProvider({ children }) {
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem('shopping-cart')
+
+      if (!savedCart) {
+        return []
+      }
+
+      const parsedCart = JSON.parse(savedCart)
+      const isValidCart =
+        Array.isArray(parsedCart) &&
+        parsedCart.every(
+          (item) =>
+            item &&
+            typeof item.id === 'string' &&
+            typeof item.name === 'string' &&
+            Number.isFinite(item.price) &&
+            Number.isFinite(item.quantity) &&
+            item.quantity > 0,
+        )
+
+      return isValidCart ? parsedCart : []
+    } catch {
+      return []
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('shopping-cart', JSON.stringify(items))
+    } catch {
+      // Ignore storage errors so they do not prevent the cart from working.
+    }
+  }, [items])
 
   function addToCart(product) {
     setItems((currentItems) => {
