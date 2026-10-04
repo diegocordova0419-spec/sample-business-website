@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 350ms ease-out both;
+}
+
+.page-enter-delay {
+  animation: page-enter 350ms 100ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .page-enter-delay {
+    animation: none;
+  }
+}
